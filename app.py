@@ -10,7 +10,7 @@ app = Flask(__name__,
             static_url_path='/', 
             static_folder='web')
 
-ort_session = onnxruntime.InferenceSession("efficientnet-lite4-11.onnx")
+ort_session = onnxruntime.InferenceSession("efficientnet-lite4-11-int8.onnx")
 
 # load the labels text file
 labels = json.load(open("labels_map.txt", "r"))
@@ -82,3 +82,13 @@ def analyze():
 
     # Return the result as JSON
     return jsonify(result_list)    
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python app.py <efficientnet-lite4-11-int8.onnx>")
+        exit(1)
+
+    model_path = sys.argv[1]
+    ort_session = onnxruntime.InferenceSession(model_path)
+    app.run(debug=True, port=5001)
